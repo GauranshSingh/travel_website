@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust - Discover Your Next Adventure</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            color: white;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 20px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        /* Search Section */
+        .search-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-top: 30px;
+            animation: fadeInUp 1s ease 0.3s;
+            animation-fill-mode: both;
+        }
+
+        .search-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-control {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .search-btn {
+            padding: 12px 30px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Horizontal Sliding Section */
+        .destinations-slider {
+            padding: 80px 0;
+            background-color: #f8f9fa;
+        }
+
+        .slider-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slider-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .destination-card {
+            min-width: 300px;
+            margin-right: 20px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .destination-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .destination-img {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .destination-info {
+            padding: 20px;
+        }
+
+        .destination-info h3 {
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .destination-info p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .destination-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+        }
+
+        .rating {
+            color: #f39c12;
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .slider-nav:hover {
+            background-color: white;
+        }
+
+        .slider-prev {
+            left: 20px;
+        }
+
+        .slider-next {
+            right: 20px;
+        }
+
+        /* Featured Places Section */
+        .featured-places {
+            padding: 80px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-header h2 {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            width: 70px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .featured-card {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 300px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .featured-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .featured-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            padding: 20px;
+            color: white;
+        }
+
+        .featured-overlay h3 {
+            margin-bottom: 5px;
+        }
+
+        .featured-overlay p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Booking Widget */
+        .booking-widget {
+            padding: 80px 0;
+            background-color: #f8f9fa;
+        }
+
+        .widget-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .widget-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .widget-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .widget-btn {
+            grid-column: 1 / -1;
+            padding: 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .widget-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        /* Top Deals Section */
+        .top-deals {
+            padding: 80px 0;
+        }
+
+        .deals-container {
+            position: relative;
+        }
+
+        .deal-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            transition: transform 0.3s ease;
+        }
+
+        .deal-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .deal-img {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .deal-content {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .deal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .deal-title {
+            margin: 0;
+            color: var(--dark-color);
+        }
+
+        .deal-discount {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .deal-description {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .deal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .deal-price {
+            display: flex;
+            align-items: center;
+        }
+
+        .current-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            margin-left: 10px;
+        }
+
+        .deal-btn {
+            padding: 8px 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .deal-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 80px 0;
+            background-color: #f8f9fa;
+        }
+
+        .testimonial-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '\f10d';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.5rem;
+            color: rgba(52, 152, 219, 0.2);
+        }
+
+        .testimonial-text {
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+
+        .author-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+
+        .author-info h4 {
+            margin-bottom: 5px;
+        }
+
+        .author-info p {
+            margin: 0;
+            color: #666;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 70px 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-col h3 {
+            color: white;
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 2px;
+            background-color: var(--secondary-color);
+            bottom: 0;
+            left: 0;
+        }
+
+        .footer-col p {
+            color: #bbb;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #bbb;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary-color);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bbb;
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .search-btn {
+                width: 100%;
+            }
+
+            .deal-card {
+                flex-direction: column;
+            }
+
+            .deal-img {
+                width: 100%;
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .featured-grid,
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Discover Your Next Adventure</h1>
+                <p>Explore the world's most breathtaking destinations with our expertly crafted travel experiences.</p>
+                
+                <div class="search-section">
+                    <form class="search-form" th:action="@{/search}" method="get">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Destination" name="destination">
+                        </div>
+                        <div class="form-group">
+                            <input type="date" class="form-control" placeholder="Check In" name="checkIn">
+                        </div>
+                        <div class="form-group">
+                            <input type="date" class="form-control" placeholder="Check Out" name="checkOut">
+                        </div>
+                        <div class="form-group">
+                            <select class="form-control" name="travelers">
+                                <option value="1">1 Traveler</option>
+                                <option value="2">2 Travelers</option>
+                                <option value="3">3 Travelers</option>
+                                <option value="4+">4+ Travelers</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="search-btn">Search</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destinations Slider Section -->
+    <section class="destinations-slider">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2>Popular Destinations</h2>
+                <p>Explore our handpicked selection of the world's most amazing places</p>
+            </div>
+            
+            <div class="slider-container">
+                <div class="slider-track" id="sliderTrack">
+                    <!-- Destinations will be populated from the database -->
+                    <div class="destination-card" th:each="destination : ${featuredDestinations}">
+                        <img th:src="${destination.imageUrl}" alt="${destination.name}" class="destination-img">
+                        <div class="destination-info">
+                            <h3 th:text="${destination.name}">Destination Name</h3>
+                            <p th:text="${destination.description}">Destination Description</p>
+                            <div class="destination-footer">
+                                <span class="price" th:text="'$' + ${destination.price}">$0</span>
+                                <div class="rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="slider-nav slider-prev" id="sliderPrev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="slider-nav slider-next" id="sliderNext">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Places Section -->
+    <section class="featured-places">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2>Featured Places</h2>
+                <p>Discover the beauty of India's most iconic destinations</p>
+            </div>
+            
+            <div class="featured-grid animate-on-scroll">
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" alt="Jaipur" class="featured-img">
+                    <div class="featured-overlay">
+                        <h3>Jaipur</h3>
+                        <p>Rajasthan</p>
+                    </div>
+                </div>
+                
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1512343877844-7e5e5b3c3e0e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" alt="Goa" class="featured-img">
+                    <div class="featured-overlay">
+                        <h3>Goa</h3>
+                        <p>Goa</p>
+                    </div>
+                </div>
+                
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1604537466158-719b1972feb8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" alt="Kerala" class="featured-img">
+                    <div class="featured-overlay">
+                        <h3>Kerala</h3>
+                        <p>Kerala</p>
+                    </div>
+                </div>
+                
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1477587458883-4717ed28357b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" alt="Rajasthan" class="featured-img">
+                    <div class="featured-overlay">
+                        <h3>Rajasthan</h3>
+                        <p>Rajasthan</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Widget Section -->
+    <section class="booking-widget">
+        <div class="container">
+            <div class="widget-container animate-on-scroll">
+                <div class="widget-header">
+                    <h2>Quick Booking</h2>
+                    <p>Reserve your dream vacation in just a few clicks</p>
+                </div>
+                
+                <form class="widget-form" th:action="@{/booking}" method="post">
+                    <div class="form-group">
+                        <label for="destination">Destination</label>
+                        <select id="destination" class="form-control" name="destinationId" required>
+                            <option value="">Select Destination</option>
+                            <option th:each="destination : ${latestDestinations}" 
+                                    th:value="${destination.id}" 
+                                    th:text="${destination.name}">
+                                Destination Name
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkIn">Check In</label>
+                        <input type="date" id="checkIn" class="form-control" name="checkIn" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkOut">Check Out</label>
+                        <input type="date" id="checkOut" class="form-control" name="checkOut" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="guests">Guests</label>
+                        <select id="guests" class="form-control" name="guests" required>
+                            <option value="1">1 Guest</option>
+                            <option value="2">2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5+">5+ Guests</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="widget-btn">Book Now</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Deals Section -->
+    <section class="top-deals">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2>Top Deals</h2>
+                <p>Exclusive offers on our most popular destinations</p>
+            </div>
+            
+            <div class="deals-container animate-on-scroll">
+                <div class="deal-card">
+                    <img src="https://images.unsplash.com/photo-1543429776-2782fc66b817?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" alt="Bali" class="deal-img">
+                    <div class="deal-content">
+                        <div class="deal-header">
+                            <h3 class="deal-title">Bali Adventure Package</h3>
+                            <span class="deal-discount">25% OFF</span>
+                        </div>
+                        <p class="deal-description">7 days and 6 nights in Bali with guided tours, accommodation, and meals included.</p>
+                        <div class="deal-footer">
+                            <div class="deal-price">
+                                <span class="current-price">$899</span>
+                                <span class="original-price">$1199</span>
+                            </div>
+                            <button class="deal-btn">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="deal-card">
+                    <img src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" alt="Santorini" class="deal-img">
+                    <div class="deal-content">
+                        <div class="deal-header">
+                            <h3 class="deal-title">Santorini Getaway</h3>
+                            <span class="deal-discount">20% OFF</span>
+                        </div>
+                        <p class="deal-description">5 days and 4 nights in Santorini with luxury accommodation and sunset tours.</p>
+                        <div class="deal-footer">
+                            <div class="deal-price">
+                                <span class="current-price">$1299</span>
+                                <span class="original-price">$1624</span>
+                            </div>
+                            <button class="deal-btn">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="deal-card">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" alt="Kyoto" class="deal-img">
+                    <div class="deal-content">
+                        <div class="deal-header">
+                            <h3 class="deal-title">Kyoto Cultural Experience</h3>
+                            <span class="deal-discount">30% OFF</span>
+                        </div>
+                        <p class="deal-description">6 days and 5 nights in Kyoto with temple visits, tea ceremonies, and cultural tours.</p>
+                        <div class="deal-footer">
+                            <div class="deal-price">
+                                <span class="current-price">$1199</span>
+                                <span class="original-price">$1714</span>
+                            </div>
+                            <button class="deal-btn">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2>What Our Travelers Say</h2>
+                <p>Real experiences from real adventurers</p>
+            </div>
+            
+            <div class="row animate-on-scroll">
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">"The trip to Bali was absolutely magical! Every detail was perfectly planned, and the local guides were incredibly knowledgeable. This was truly a once-in-a-lifetime experience."</p>
+                        <div class="testimonial-author">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson" class="author-img">
+                            <div class="author-info">
+                                <h4>Sarah Johnson</h4>
+                                <p>Bali, Indonesia</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">"I've traveled with many companies, but none compare to the level of service and attention to detail provided here. Our Santorini honeymoon was perfection from start to finish."</p>
+                        <div class="testimonial-author">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Chen" class="author-img">
+                            <div class="author-info">
+                                <h4>Michael Chen</h4>
+                                <p>Santorini, Greece</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">"The cultural immersion in Kyoto was beyond my expectations. From the temple visits to the traditional tea ceremony, every moment was thoughtfully curated and meaningful."</p>
+                        <div class="testimonial-author">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Emma Rodriguez" class="author-img">
+                            <div class="author-info">
+                                <h4>Emma Rodriguez</h4>
+                                <p>Kyoto, Japan</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>About Wanderlust</h3>
+                    <p>We are a team of passionate travelers dedicated to creating unforgettable experiences for adventurers around the world.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Destinations</a></li>
+                        <li><a href="#">Tours</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Travel Insurance</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Contact Info</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Travel Street, Adventure City</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@wanderlust.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 Wanderlust Travel. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        // Slider functionality
+        const sliderTrack = document.getElementById('sliderTrack');
+        const sliderPrev = document.getElementById('sliderPrev');
+        const sliderNext = document.getElementById('sliderNext');
+        
+        let currentPosition = 0;
+        const cardWidth = 320; // Card width + margin
+        const visibleCards = Math.floor(window.innerWidth / cardWidth);
+        const maxPosition = Math.max(0, sliderTrack.children.length - visibleCards);
+        
+        sliderPrev.addEventListener('click', () => {
+            if (currentPosition > 0) {
+                currentPosition--;
+                updateSliderPosition();
+            }
+        });
+        
+        sliderNext.addEventListener('click', () => {
+            if (currentPosition < maxPosition) {
+                currentPosition++;
+                updateSliderPosition();
+            }
+        });
+        
+        function updateSliderPosition() {
+            sliderTrack.style.transform = `translateX(-${currentPosition * cardWidth}px)`;
+        }
+        
+        // Responsive slider
+        window.addEventListener('resize', () => {
+            const newVisibleCards = Math.floor(window.innerWidth / cardWidth);
+            const newMaxPosition = Math.max(0, sliderTrack.children.length - newVisibleCards);
+            
+            if (currentPosition > newMaxPosition) {
+                currentPosition = newMaxPosition;
+                updateSliderPosition();
+            }
+        });
+        
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Form submissions
+        document.querySelectorAll('.deal-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                alert('Thank you for your interest! This feature will be available soon.');
+            });
+        });
+    </script>
+</body>
+</html>
