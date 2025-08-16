@@ -16,13 +16,11 @@ import com.travelwebsite.entity.User;
 import com.travelwebsite.repository.UserRepository;
 
 @Service
-// This class now correctly implements our updated UserService interface
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // The @Lazy annotation is no longer needed with the modern SecurityConfig
     @Autowired
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -47,7 +45,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
+        // Check if username already exists
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
+
+        // Check if email already exists
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        // Encode password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // Assign default role if none is assigned
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            user.getRoles().add(User.Role.ROLE_USER);
+        }
+
         return userRepository.save(user);
     }
 

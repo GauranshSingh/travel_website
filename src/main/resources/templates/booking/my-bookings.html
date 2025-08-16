@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Wanderlust Travel</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            background-color: #f8f9fa;
+        }
+
+        /* Bookings Header */
+        .bookings-header {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 30px;
+        }
+
+        .bookings-header h1 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .bookings-header p {
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        /* Bookings Content */
+        .bookings-content {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .booking-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .booking-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .booking-header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .booking-title {
+            display: flex;
+            align-items: center;
+        }
+
+        .booking-image {
+            width: 80px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+
+        .booking-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .booking-name h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--dark-color);
+        }
+
+        .booking-name p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .booking-id {
+            font-family: monospace;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .detail-icon {
+            width: 36px;
+            height: 36px;
+            background-color: #f8f9fa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+
+        .detail-text {
+            flex: 1;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 2px;
+        }
+
+        .detail-value {
+            font-weight: 500;
+        }
+
+        .booking-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .booking-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .booking-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-completed {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            border-radius: 4px;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #777;
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            color: #999;
+            margin-bottom: 25px;
+        }
+
+        .alert {
+            border-radius: 4px;
+            border: none;
+        }
+
+        .alert-success {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success-color);
+        }
+
+        .alert-danger {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--accent-color);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .booking-header-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .booking-title {
+                margin-bottom: 10px;
+            }
+
+            .booking-details {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .booking-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-globe-americas me-2"></i>
+                Wanderlust
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/destinations">Destinations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tours">Tours</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Contact</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user me-1"></i> <span th:text="${#authentication.name}">User</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/profile">My Profile</a></li>
+                            <li><a class="dropdown-item active" href="/bookings/my-bookings">My Bookings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Bookings Header -->
+    <div class="bookings-header">
+        <div class="container">
+            <h1>My Bookings</h1>
+            <p>View and manage your travel bookings</p>
+        </div>
+    </div>
+
+    <!-- Bookings Content -->
+    <div class="container">
+        <!-- Success Message -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i> <span th:text="${successMessage}">Success message</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Error Message -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i> <span th:text="${errorMessage}">Error message</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="bookings-content">
+            <h2 class="section-title">Your Bookings</h2>
+
+            <!-- Bookings List -->
+            <div th:if="${not #lists.isEmpty(bookings)}">
+                <div class="booking-card" th:each="booking : ${bookings}">
+                    <div class="booking-header-info">
+                        <div class="booking-title">
+                            <div class="booking-image">
+                                <img th:src="${booking.destination.imageUrl}" alt="${booking.destination.name}">
+                            </div>
+                            <div class="booking-name">
+                                <h3 th:text="${booking.destination.name}">Destination Name</h3>
+                                <p th:text="${booking.destination.location}">Location</p>
+                            </div>
+                        </div>
+                        <div class="booking-id" th:text="'#' + ${booking.id}">#12345</div>
+                    </div>
+
+                    <div class="booking-details">
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="detail-text">
+                                <div class="detail-label">Check-in</div>
+                                <div class="detail-value" th:text="${#dates.format(booking.checkInDate, 'MMM dd, yyyy')}">Jan 01, 2023</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="detail-text">
+                                <div class="detail-label">Check-out</div>
+                                <div class="detail-value" th:text="${#dates.format(booking.checkOutDate, 'MMM dd, yyyy')}">Jan 05, 2023</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="detail-text">
+                                <div class="detail-label">Guests</div>
+                                <div class="detail-value" th:text="${booking.numberOfGuests}">2</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="detail-text">
+                                <div class="detail-label">Booked on</div>
+                                <div class="detail-value" th:text="${#dates.format(booking.createdAt, 'MMM dd, yyyy')}">Jan 01, 2023</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="booking-footer">
+                        <div>
+                            <div class="booking-price" th:text="'$' + ${booking.totalPrice}">$0</div>
+                            <span class="booking-status" th:classappend="'status-' + ${booking.bookingStatus.toString().toLowerCase()}" 
+                                  th:text="${booking.bookingStatus}">PENDING</span>
+                        </div>
+                        <div class="booking-actions">
+                            <a th:href="@{'/bookings/confirmation/' + ${booking.id}}" class="btn btn-primary btn-sm">View Details</a>
+                            <a th:if="${booking.bookingStatus.name() != 'CANCELLED'}" 
+                               th:href="@{'/bookings/cancel/' + ${booking.id}}" 
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(bookings)}" class="empty-state">
+                <i class="fas fa-suitcase-rolling"></i>
+                <h3>No Bookings Found</h3>
+                <p>You haven't made any bookings yet. Start exploring our destinations and book your first trip!</p>
+                <a href="/destinations" class="btn btn-primary">Explore Destinations</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
