@@ -1,5 +1,6 @@
 package com.travelwebsite.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,6 @@ public class DestinationController {
     public String getDestination(@PathVariable Long id, Model model) {
         Destination destination = destinationService.findDestinationById(id);
         model.addAttribute("destination", destination);
-        return "destination-detail"; // This will be the destination detail page
+        return "destination-detail";
     }
 }

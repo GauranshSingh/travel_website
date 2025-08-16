@@ -32,4 +32,11 @@ public class HomeController {
         
         return "index"; // This will be the homepage Thymeleaf template
     }
+    
+    @GetMapping("/destinations")
+    public String listAllDestinations(Model model) {
+        List<Destination> allDestinations = destinationService.findAllDestinations();
+        model.addAttribute("destinations", allDestinations);
+        return "destinations-list";
+    }
 }

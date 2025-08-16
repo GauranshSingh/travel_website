@@ -621,6 +621,53 @@
     </style>
 </head>
 <body>
+	
+	<!-- In index.html, update the navigation section -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	    <div class="container">
+	        <a class="navbar-brand" href="/">
+	            <i class="fas fa-globe-americas me-2"></i>
+	            Wanderlust
+	        </a>
+	        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+	            <span class="navbar-toggler-icon"></span>
+	        </button>
+	        <div class="collapse navbar-collapse" id="navbarNav">
+	            <ul class="navbar-nav ms-auto">
+	                <li class="nav-item">
+	                    <a class="nav-link" href="/">Home</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" href="/destinations">Destinations</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" href="/tours">Tours</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" href="/contact">Contact</a>
+	                </li>
+	                <li class="nav-item" th:if="${#authorization == null or !#authorization.isAuthenticated()}">
+	                    <a class="nav-link" href="/login">Login</a>
+	                </li>
+	                <li class="nav-item" th:if="${#authorization == null or !#authorization.isAuthenticated()}">
+	                    <a class="nav-link" href="/register">Register</a>
+	                </li>
+	                <li class="nav-item dropdown" th:if="${#authorization != null and #authorization.isAuthenticated()}">
+	                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+	                        <i class="fas fa-user me-1"></i> <span th:text="${#authentication.name}">User</span>
+	                    </a>
+	                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+	                        <li><a class="dropdown-item" href="/profile">My Profile</a></li>
+	                        <li><a class="dropdown-item" href="/bookings">My Bookings</a></li>
+	                        <li><hr class="dropdown-divider"></li>
+	                        <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
+	                    </ul>
+	                </li>
+	            </ul>
+	        </div>
+	    </div>
+	</nav>
+	
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
@@ -629,26 +676,27 @@
                 <p>Explore the world's most breathtaking destinations with our expertly crafted travel experiences.</p>
                 
                 <div class="search-section">
-                    <form class="search-form" th:action="@{/search}" method="get">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Destination" name="destination">
-                        </div>
-                        <div class="form-group">
-                            <input type="date" class="form-control" placeholder="Check In" name="checkIn">
-                        </div>
-                        <div class="form-group">
-                            <input type="date" class="form-control" placeholder="Check Out" name="checkOut">
-                        </div>
-                        <div class="form-group">
-                            <select class="form-control" name="travelers">
-                                <option value="1">1 Traveler</option>
-                                <option value="2">2 Travelers</option>
-                                <option value="3">3 Travelers</option>
-                                <option value="4+">4+ Travelers</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="search-btn">Search</button>
-                    </form>
+					<!-- In index.html, update the search form -->
+					<form class="search-form" th:action="@{/destinations/search}" method="get">
+					    <div class="form-group">
+					        <input type="text" class="form-control" placeholder="Destination" name="query" required>
+					    </div>
+					    <div class="form-group">
+					        <input type="date" class="form-control" placeholder="Check In" name="checkIn">
+					    </div>
+					    <div class="form-group">
+					        <input type="date" class="form-control" placeholder="Check Out" name="checkOut">
+					    </div>
+					    <div class="form-group">
+					        <select class="form-control" name="travelers">
+					            <option value="1">1 Traveler</option>
+					            <option value="2">2 Travelers</option>
+					            <option value="3">3 Travelers</option>
+					            <option value="4+">4+ Travelers</option>
+					        </select>
+					    </div>
+					    <button type="submit" class="search-btn">Search</button>
+					</form>
                 </div>
             </div>
         </div>
@@ -665,23 +713,37 @@
             <div class="slider-container">
                 <div class="slider-track" id="sliderTrack">
                     <!-- Destinations will be populated from the database -->
-                    <div class="destination-card" th:each="destination : ${featuredDestinations}">
-                        <img th:src="${destination.imageUrl}" alt="${destination.name}" class="destination-img">
-                        <div class="destination-info">
-                            <h3 th:text="${destination.name}">Destination Name</h3>
-                            <p th:text="${destination.description}">Destination Description</p>
-                            <div class="destination-footer">
-                                <span class="price" th:text="'$' + ${destination.price}">$0</span>
-                                <div class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+					<!-- Update the destination cards in the slider -->
+					<div class="destination-card" th:each="destination : ${featuredDestinations}">
+					    <a th:href="@{'/destinations/' + ${destination.id}}" class="text-decoration-none text-dark">
+					        <img th:src="${destination.imageUrl}" alt="${destination.name}" class="destination-img">
+					        <div class="destination-info">
+					            <h3 th:text="${destination.name}">Destination Name</h3>
+					            <p th:text="${destination.description}">Destination Description</p>
+					            <div class="destination-footer">
+					                <span class="price" th:text="'$' + ${destination.price}">$0</span>
+					                <div class="rating">
+					                    <i class="fas fa-star"></i>
+					                    <i class="fas fa-star"></i>
+					                    <i class="fas fa-star"></i>
+					                    <i class="fas fa-star"></i>
+					                    <i class="fas fa-star-half-alt"></i>
+					                </div>
+					            </div>
+					        </div>
+					    </a>
+					</div>
+
+					<!-- Update the featured cards -->
+					<div class="featured-card" th:each="destination : ${latestDestinations}">
+					    <a th:href="@{'/destinations/' + ${destination.id}}" class="text-decoration-none text-dark">
+					        <img th:src="${destination.imageUrl}" alt="${destination.name}" class="featured-img">
+					        <div class="featured-overlay">
+					            <h3 th:text="${destination.name}">Destination Name</h3>
+					            <p th:text="${destination.state}">State</p>
+					        </div>
+					    </a>
+					</div>
                 </div>
                 
                 <button class="slider-nav slider-prev" id="sliderPrev">

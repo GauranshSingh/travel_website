@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destinations - Wanderlust Travel</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #0d47a1;
+            --secondary-color: #1976d2;
+            --accent-color: #ffc107;
+            --light-color: #f5f5f5;
+            --dark-color: #263238;
+            --success-color: #4caf50;
+            --text-color: #37474f;
+            --hover-color: #1565c0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            background-color: #f8f9fa;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+        }
+
+        .navbar-brand i {
+            color: var(--accent-color);
+            margin-right: 5px;
+        }
+
+        .nav-link {
+            color: var(--dark-color) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-color) !important;
+        }
+
+        .nav-link.active {
+            color: var(--secondary-color) !important;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: var(--secondary-color);
+            bottom: 0;
+            left: 0;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80') center/cover no-repeat;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-hero {
+            background-color: var(--accent-color);
+            color: var(--dark-color);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-hero:hover {
+            background-color: #ffb300;
+            transform: translateY(-3px);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin: 30px 0;
+        }
+
+        .filter-title {
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.25);
+        }
+
+        .btn-filter {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-filter:hover {
+            background-color: var(--hover-color);
+        }
+
+        /* Destination Cards */
+        .destination-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .destination-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .destination-img-container {
+            position: relative;
+            overflow: hidden;
+            height: 200px;
+        }
+
+        .destination-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .destination-card:hover .destination-img {
+            transform: scale(1.1);
+        }
+
+        .sale-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--accent-color);
+            color: var(--dark-color);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            z-index: 1;
+        }
+
+        .destination-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .destination-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .destination-location {
+            color: #78909c;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .destination-location i {
+            margin-right: 5px;
+        }
+
+        .destination-description {
+            color: #546e7a;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .destination-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .destination-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .destination-duration {
+            color: #78909c;
+            font-size: 0.9rem;
+        }
+
+        .btn-details {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .btn-details:hover {
+            background-color: var(--hover-color);
+        }
+
+        /* Pagination */
+        .pagination {
+            justify-content: center;
+            margin: 40px 0;
+        }
+
+        .page-link {
+            color: var(--secondary-color);
+            border-radius: 8px;
+            margin: 0 3px;
+            border: 1px solid #ddd;
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .page-link:hover {
+            color: var(--hover-color);
+            background-color: #f1f8fe;
+            border-color: var(--secondary-color);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(rgba(13, 71, 161, 0.9), rgba(13, 71, 161, 0.9)), url('https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80') center/cover no-repeat;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .cta-description {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .btn-cta {
+            background-color: var(--accent-color);
+            color: var(--dark-color);
+            border: none;
+            padding: 15px 40px;
+            font-weight: 600;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cta:hover {
+            background-color: #ffb300;
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 70px 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-col h3 {
+            color: white;
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 2px;
+            background-color: var(--accent-color);
+            bottom: 0;
+            left: 0;
+        }
+
+        .footer-col p {
+            color: #bbb;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #bbb;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bbb;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .filter-section {
+                padding: 20px;
+            }
+
+            .cta-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .cta-title {
+                font-size: 1.8rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="fas fa-globe-americas"></i> Wanderlust
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/destinations">Destinations</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Packages</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Offers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Explore Our Destinations</h1>
+            <p>Discover breathtaking locations around the world with our expertly crafted travel experiences</p>
+            <a href="#destinations-list" class="btn btn-hero">Explore Now</a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container my-5">
+        <!-- Filter Section -->
+        <section class="filter-section">
+            <h2 class="filter-title">Find Your Perfect Destination</h2>
+            <form th:action="@{/destinations}" method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label for="state" class="form-label">State</label>
+                    <select class="form-select" id="state" name="state">
+                        <option value="">All States</option>
+                        <option value="Rajasthan" th:selected="${state == 'Rajasthan'}">Rajasthan</option>
+                        <option value="Goa" th:selected="${state == 'Goa'}">Goa</option>
+                        <option value="Kerala" th:selected="${state == 'Kerala'}">Kerala</option>
+                        <option value="Maharashtra" th:selected="${state == 'Maharashtra'}">Maharashtra</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="minPrice" class="form-label">Min Price</label>
+                    <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="0" th:value="${minPrice}">
+                </div>
+                <div class="col-md-3">
+                    <label for="maxPrice" class="form-label">Max Price</label>
+                    <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="5000" th:value="${maxPrice}">
+                </div>
+                <div class="col-md-3">
+                    <label for="sort" class="form-label">Sort By</label>
+                    <select class="form-select" id="sort" name="sort">
+                        <option value="name,asc" th:selected="${sort == 'name,asc'}">Name (A-Z)</option>
+                        <option value="name,desc" th:selected="${sort == 'name,desc'}">Name (Z-A)</option>
+                        <option value="price,asc" th:selected="${sort == 'price,asc'}">Price (Low to High)</option>
+                        <option value="price,desc" th:selected="${sort == 'price,desc'}">Price (High to Low)</option>
+                    </select>
+                </div>
+                <div class="col-12 d-flex justify-content-end mt-3">
+                    <button type="submit" class="btn btn-filter">Apply Filters</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Destinations List -->
+        <section id="destinations-list" class="my-5">
+            <h2 class="text-center mb-4">Popular Destinations</h2>
+            
+            <div class="row g-4">
+                <!-- Destination Cards -->
+                <div class="col-lg-4 col-md-6" th:each="destination : ${destinations}">
+                    <div class="destination-card">
+                        <div class="destination-img-container">
+                            <img th:src="${destination.imageUrl}" th:alt="${destination.name}" class="destination-img">
+                            <span class="sale-badge" th:if="${destination.featured}">Featured</span>
+                        </div>
+                        <div class="destination-content">
+                            <h3 class="destination-title" th:text="${destination.name}">Destination Name</h3>
+                            <div class="destination-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span th:text="${destination.location}">Location</span>
+                            </div>
+                            <p class="destination-description" th:text="${destination.description}">Destination description goes here</p>
+                            <div class="destination-meta">
+                                <span class="destination-price" th:text="'$' + ${destination.price}">$0</span>
+                                <span class="destination-duration">5 Nights / 6 Days</span>
+                            </div>
+                            <a th:href="@{'/destinations/' + ${destination.id}}" class="btn btn-details">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" th:if="${destinations.totalPages > 1}">
+                <ul class="pagination">
+                    <li class="page-item" th:class="${destinations.number == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/destinations(page=${destinations.number - 1}, size=${destinations.size}, sort=${sort}, state=${state}, minPrice=${minPrice}, maxPrice=${maxPrice})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, destinations.totalPages - 1)}" th:class="${destinations.number == i} ? 'active'">
+                        <a class="page-link" th:href="@{/destinations(page=${i}, size=${destinations.size}, sort=${sort}, state=${state}, minPrice=${minPrice}, maxPrice=${maxPrice})}" th:text="${i + 1}">1</a>
+                    </li>
+                    
+                    <li class="page-item" th:class="${destinations.number == destinations.totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/destinations(page=${destinations.number + 1}, size=${destinations.size}, sort=${sort}, state=${state}, minPrice=${minPrice}, maxPrice=${maxPrice})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready for Your Next Adventure?</h2>
+            <p class="cta-description">Our travel experts are standing by to help you plan the perfect getaway tailored to your preferences and budget.</p>
+            <a href="#" class="btn btn-cta">Contact Us Today</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>About Wanderlust</h3>
+                    <p>We are a team of passionate travelers dedicated to creating unforgettable experiences for adventurers around the world.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/destinations">Destinations</a></li>
+                        <li><a href="#">Packages</a></li>
+                        <li><a href="#">Offers</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Travel Insurance</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Contact Info</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Travel Street, Adventure City</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@wanderlust.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 Wanderlust Travel. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
